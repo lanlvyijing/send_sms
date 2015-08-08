@@ -37,15 +37,15 @@ void sms_send_sms_test(void){
     VMINT res = 0;
     VMINT number_count = 0;
     VMBOOL result;
-    number_count = vm_gsm_sim_get_card_count();
+    number_count = vm_gsm_sim_get_card_count();//获得SMS卡数
     vm_log_debug("sms read card count %d", number_count);
-    result = vm_gsm_sim_has_card();
+    result = vm_gsm_sim_has_card();//读取卡的结果
     vm_log_debug("sms read sim card result %d", result);
     /* Sets SMS content */
-    vm_chset_ascii_to_ucs2(content, 100*2, "hello, LINKIT SMS!");
+    vm_chset_ascii_to_ucs2(content, 100*2, "hello, LINKIT SMS!");//转换字符格式，设置短信内容
     
     /* Sets recipient's mobile number */
-    vm_chset_ascii_to_ucs2(num, 100*2, "+8610086");
+    vm_chset_ascii_to_ucs2(num, 100*2, "+8610086");//转换字符格式，设置电话号码
     res = vm_gsm_sms_send(num, content, sms_send_callback, NULL);
     if(res != 0){
         vm_log_debug("sms send fail!");
@@ -60,7 +60,7 @@ void sms_send_timer_callback(VM_TIMER_ID_PRECISE timer_id, void* user_data){
         sms_send_sms_test();
         
         /* Deletes the precise timer */
-        vm_timer_delete_precise(timer_id);
+        vm_timer_delete_precise(timer_id);//关闭检查SMS的定时器
     }
     else{
         vm_log_debug("sms is not ready");
@@ -74,7 +74,7 @@ void handle_sysevt(VMINT message, VMINT param) {
     switch (message) {
         case VM_EVENT_CREATE:
         /* Creates a precise timer of 5 seconds to wait for the SMS message ready. */
-        timer_id = vm_timer_create_precise(5000, sms_send_timer_callback, NULL);
+        timer_id = vm_timer_create_precise(5000, sms_send_timer_callback, NULL);//注册个定时器，每5秒检查一下SMS卡是否准备好
         if(timer_id < 0){
             vm_log_debug("send sms timer fail");
         }
